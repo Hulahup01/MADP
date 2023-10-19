@@ -8,7 +8,7 @@ namespace WEB_153503_BOBKO.Domain.Models
 {
     public class ResponseData<T>
     {
-        public T Data { get; set; }
+        public T? Data { get; set; } 
         public bool Success { get; set; }
         public string? ErrorMessage { get; set; }
     }

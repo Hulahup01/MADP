@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using WEB_153503_BOBKO.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder
 
 
 var app = builder.Build();
+
+await DbInitializer.SeedData(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

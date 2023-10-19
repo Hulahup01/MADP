@@ -9,7 +9,7 @@ namespace WEB_153503_BOBKO.Domain.Entities
     public class GameGenre
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? NormalizedName { get; set; }
+        public string Name { get; set; } = null!;
+        public string NormalizedName { get; set; } = null!;
     }
 }
