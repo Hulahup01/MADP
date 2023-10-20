@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
 using WEB_153503_BOBKO.API.Data;
+using WEB_153503_BOBKO.API.Services.GameGenreService;
+using WEB_153503_BOBKO.API.Services.GameServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +13,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IGameGenreService, GameGenreService>();
+builder.Services.AddScoped<IGameService, GameService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
 
 var app = builder.Build();
 
-await DbInitializer.SeedData(app);
+//await DbInitializer.SeedData(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -21,21 +21,20 @@ namespace WEB_153503_BOBKO.Controllers
         public async Task<IActionResult> Index(string? gameGenreNormalized, int pageNo = 1)
         {
             if (gameGenreNormalized == "Все")
-               gameGenreNormalized = null;
+                gameGenreNormalized = null;
 
             var genres = (await _gameGenreService.GetCategoryListAsync()).Data;
 
             ViewData["genres"] = genres;
             ViewData["currentGenre"] =
-                gameGenreNormalized == null ? 
+                gameGenreNormalized == null ?
                 new GameGenre { Id = 3, Name = "Все", NormalizedName = null } :
                 genres.Where(genre => genre.NormalizedName.Equals(gameGenreNormalized)).ToList().First();
 
             var productResponse = await _gameService.GetGameListAsync(gameGenreNormalized, pageNo);
 
 
-            //  FEEGWEGKL:EGHJKL:SGJKDJGJDSGJDGJ:DSKL:JGLKDSGKLJDL:GJSDLGJ:D
-            if (productResponse.Success)
+            if (!productResponse.Success)
                 return NotFound(productResponse.ErrorMessage);
 
 

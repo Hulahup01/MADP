@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WEB_153503_BOBKO.API.Data;
+using WEB_153503_BOBKO.API.Services.GameGenreService;
+using WEB_153503_BOBKO.API.Services.GameServices;
 using WEB_153503_BOBKO.Domain.Entities;
+using WEB_153503_BOBKO.Domain.Models;
 
 namespace WEB_153503_BOBKO.API.Controllers
 {
@@ -14,40 +17,27 @@ namespace WEB_153503_BOBKO.API.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IGameService _gameService;
 
-        public GamesController(AppDbContext context)
+        public GamesController(IGameService gameService)
         {
-            _context = context;
+            _gameService = gameService;
         }
 
         // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGames()
+        public async Task<ActionResult<IEnumerable<Game>>> GetGames(string? gameGenre, int pageNo = 1, int pageSize = 3)
         {
-          if (_context.Games == null)
-          {
-              return NotFound();
-          }
-            return await _context.Games.ToListAsync();
+            return Ok(await _gameService.GetGameListAsync(gameGenre, pageNo, pageSize));
         }
 
-        // GET: api/Games/5
-        [HttpGet("{id}")]
+
+        // GET: api/Games/game-5
+        [HttpGet("game-{id}")]
         public async Task<ActionResult<Game>> GetGame(int id)
         {
-          if (_context.Games == null)
-          {
-              return NotFound();
-          }
-            var game = await _context.Games.FindAsync(id);
-
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            return game;
+            var response = await _gameService.GetGameByIdAsync(id);
+            return response.Success ? Ok(response) : NotFound(response);
         }
 
         // PUT: api/Games/5
@@ -55,30 +45,24 @@ namespace WEB_153503_BOBKO.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(int id, Game game)
         {
-            if (id != game.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(game).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _gameService.UpdateGameAsync(id, game);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!GameExists(id))
+                return NotFound(new ResponseData<Game>()
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                    Success = false,
+                    ErrorMessage = ex.Message
+                });
             }
 
-            return NoContent();
+            return Ok(new ResponseData<Game>()
+            {
+                Data = game,
+                Success = true,
+            });
         }
 
         // POST: api/Games
@@ -86,39 +70,45 @@ namespace WEB_153503_BOBKO.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(Game game)
         {
-          if (_context.Games == null)
-          {
-              return Problem("Entity set 'AppDbContext.Games'  is null.");
-          }
-            _context.Games.Add(game);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetGame", new { id = game.Id }, game);
+            var response = await _gameService.CreateGameAsync(game);
+            return response.Success ? Ok(response) : BadRequest(response);
         }
 
         // DELETE: api/Games/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
-            if (_context.Games == null)
+            try
             {
-                return NotFound();
+                await _gameService.DeleteGameAsync(id);
             }
-            var game = await _context.Games.FindAsync(id);
-            if (game == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(new ResponseData<Game>()
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                });
             }
-
-            _context.Games.Remove(game);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool GameExists(int id)
+        // POST: api/Tools/5
+        [HttpPost("{id}")]
+        public async Task<ActionResult<ResponseData<string>>> PostImage(int id, IFormFile formFile)
         {
-            return (_context.Games?.Any(e => e.Id == id)).GetValueOrDefault();
+            var response = await _gameService.SaveImageAsync(id, formFile);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return NotFound(response);
+        }
+
+        private async Task<bool> GameExists(int id)
+        {
+            return (await _gameService.GetGameByIdAsync(id)).Success;
         }
     }
 }
