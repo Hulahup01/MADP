@@ -25,10 +25,12 @@ namespace WEB_153503_BOBKO.API.Controllers
         }
 
         // GET: api/Games
-        [HttpGet]
+        [HttpGet("{pageNo:int}")]
+        [HttpGet("{gameGenre?}/{pageNo:int?}")]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(string? gameGenre, int pageNo = 1, int pageSize = 3)
         {
-            return Ok(await _gameService.GetGameListAsync(gameGenre, pageNo, pageSize));
+            var response = await _gameService.GetGameListAsync(gameGenre, pageNo, pageSize);
+            return response.Success ? Ok(response) : BadRequest(response);
         }
 
 

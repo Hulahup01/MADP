@@ -1,3 +1,4 @@
+using WEB_153503_BOBKO.Models;
 using WEB_153503_BOBKO.Services.GameGenreService;
 using WEB_153503_BOBKO.Services.GameService;
 
@@ -5,8 +6,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IGameGenreService, MemoryGameGenreService>();
-builder.Services.AddScoped<IGameService, MemoryGameService>();
+//builder.Services.AddScoped<IGameGenreService, MemoryGameGenreService>();
+//builder.Services.AddScoped<IGameService, MemoryGameService>();
+
+UriData uriData = builder.Configuration.GetSection("UriData").Get<UriData>()!;
+
+builder.Services.AddHttpClient<IGameService, ApiGameService>(opt => opt.BaseAddress = new Uri(uriData.ApiUri));
+builder.Services.AddHttpClient<IGameGenreService, ApiGameGenreService>(opt => opt.BaseAddress = new Uri(uriData.ApiUri));
 
 
 var app = builder.Build();
