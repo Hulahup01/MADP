@@ -23,7 +23,7 @@ namespace WEB_153503_BOBKO.Services.GameGenreService
         }
 
 
-        public async Task<ResponseData<List<GameGenre>>> GetCategoryListAsync()
+        public async Task<ResponseData<List<GameGenre>>> GetGameGenreListAsync()
         {
             var urlString = new StringBuilder($"{_httpClient.BaseAddress?.AbsoluteUri}GameGenres/");
             var response = await _httpClient.GetAsync(new Uri(urlString.ToString()));

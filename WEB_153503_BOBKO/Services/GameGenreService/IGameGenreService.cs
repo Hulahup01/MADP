@@ -5,6 +5,6 @@ namespace WEB_153503_BOBKO.Services.GameGenreService
 {
     public interface IGameGenreService
     {
-        public Task<ResponseData<List<GameGenre>>> GetCategoryListAsync();
+        public Task<ResponseData<List<GameGenre>>> GetGameGenreListAsync();
     }
 }

@@ -95,32 +95,7 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
                     Data = dataList,
                     Success = true,
                 };
-            }
-
-
-
-            //var filteredGames =
-            //   genreNormalizedName != null ?
-            //   _games.Where(game => game.Genre?.NormalizedName == genreNormalizedName).ToList() :
-            //   _games;
-
-            //int itemsPerPage = _config.GetValue<int>("ItemsPerPage");
-
-            //int totalPages =
-            //    filteredGames.Count() % itemsPerPage == 0 ?
-            //    filteredGames.Count() / itemsPerPage :
-            //    filteredGames.Count() / itemsPerPage + 1;
-
-
-            //var responseData = new ResponseData<ListModel<Game>>
-            //{
-            //    Data = new ListModel<Game>
-            //    {
-            //        Items = filteredGames.Skip((pageNo - 1) * itemsPerPage).Take(itemsPerPage).ToList(),
-            //        CurrentPage = pageNo,
-            //        TotalPages = totalPages,
-            //    }
-            //};
+            }         
 
             int totalPages =
                     count % pageSize == 0 ?

@@ -5,7 +5,7 @@ namespace WEB_153503_BOBKO.Services.GameGenreService
 {
     public class MemoryGameGenreService : IGameGenreService
     {
-        public Task<ResponseData<List<GameGenre>>> GetCategoryListAsync()
+        public Task<ResponseData<List<GameGenre>>> GetGameGenreListAsync()
         {
             var gameGenres = new List<GameGenre>
             {

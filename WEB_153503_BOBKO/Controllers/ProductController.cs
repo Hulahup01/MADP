@@ -20,7 +20,7 @@ namespace WEB_153503_BOBKO.Controllers
 
         public async Task<IActionResult> Index(string? gameGenreNormalized, int pageNo = 1)
         {
-            var genresResponse = await _gameGenreService.GetCategoryListAsync();
+            var genresResponse = await _gameGenreService.GetGameGenreListAsync();
             if (!genresResponse.Success)
                 return NotFound(genresResponse.ErrorMessage);
 
