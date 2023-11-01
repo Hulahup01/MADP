@@ -12,37 +12,6 @@
 
 <h1>Games</h1>
 
-@*<div class="col-2 border-2">
-    <ul class="nav ">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle"
-               data-bs-toggle="dropdown"
-               href="#"
-               role="button"
-               aria-expanded="false">
-                @ViewData["currentGenre"]
-            </a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="dropdown-item"
-                       asp-controller="product"
-                       asp-route-gameGenreNormalized=@null>Все</a>
-                </li>
-                @foreach (var item in ViewData["genres"] as IEnumerable<GameGenre>)
-                {
-                    <li>
-                        <a class="dropdown-item"
-                       asp-controller="product"
-                       asp-route-gameGenreNormalized="@item.NormalizedName">
-                            @item.Name
-                        </a>
-                    </li>
-                }
-            </ul>
-        </li>
-    </ul>
-</div>*@
-
 <h2>@currentGenre.Name</h2>
 
 <div class="dropdown">

@@ -125,49 +125,7 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
 
         public async Task<ResponseData<string>> SaveImageAsync(int id, IFormFile formFile)
         {
-            var responseData = new ResponseData<string>();
-            var game = await _dbContext.Games.FindAsync(id);
-
-            if (game is null)
-            {
-                return new ResponseData<string>
-                {
-                    Success = false,
-                    ErrorMessage = "No item found",
-                };
-            }
-
-            var host = "https://"/* + _httpContextAccessor.HttpContext?.Request.Host*/;
-            var imageFolder = Path.Combine(/*_webHostEnvironment.WebRootPath, */"images");
-
-            if (formFile is not null)
-            {
-                if (!string.IsNullOrEmpty(game.Path))
-                {
-                    var prevImage = Path.GetFileName(game.Path);
-                    var prevImagePath = Path.Combine(imageFolder, prevImage);
-                    if (File.Exists(prevImagePath))
-                    {
-                        File.Delete(prevImagePath);
-                    }
-                }
-                var ext = Path.GetExtension(formFile.FileName);
-                var fName = Path.ChangeExtension(Path.GetRandomFileName(), ext);
-                var filePath = Path.Combine(imageFolder, fName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await formFile.CopyToAsync(stream);
-                }
-
-                game.Path = $"{host}/images/{fName}";
-                await _dbContext.SaveChangesAsync();
-            }
-
-            return new ResponseData<string>()
-            {
-                Data = game.Path,
-                Success = true,
-            };
+            throw new NotImplementedException();
         }
 
 

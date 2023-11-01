@@ -31,12 +31,12 @@ namespace WEB_153503_BOBKO.Services.GameService
             if (genreNormalizedName != null)
             {
                 urlString.Append($"{genreNormalizedName}/");
-            };
+            }
 
             if (pageNo > 1)
             {
                 urlString.Append($"{pageNo}");
-            };
+            }
 
             if (!_pageSize.Equals("3"))
             {
@@ -125,6 +125,7 @@ namespace WEB_153503_BOBKO.Services.GameService
                 }
             }
             _logger.LogError($"No data received from the server. Error: {response.StatusCode}");
+
             return new ResponseData<Game>()
             {
                 Success = false,
@@ -151,16 +152,7 @@ namespace WEB_153503_BOBKO.Services.GameService
 
         private async Task SaveImageAsync(int id, IFormFile image)
         {
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri($"{_httpClient.BaseAddress?.AbsoluteUri}Games/{id}")
-            };
-            var content = new MultipartFormDataContent();
-            var streamContent = new StreamContent(image.OpenReadStream());
-            content.Add(streamContent, "formFile", image.FileName);
-            request.Content = content;
-            await _httpClient.SendAsync(request);
+            throw new NotImplementedException();
         }
     }
 }
