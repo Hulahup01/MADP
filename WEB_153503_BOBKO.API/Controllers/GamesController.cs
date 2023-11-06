@@ -42,9 +42,9 @@ namespace WEB_153503_BOBKO.API.Controllers
             return response.Success ? Ok(response) : NotFound(response);
         }
 
-        // PUT: api/Games/5
+        // PUT: api/Games/game-5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("game-{id}")]
         public async Task<IActionResult> PutGame(int id, Game game)
         {
             try
@@ -76,8 +76,8 @@ namespace WEB_153503_BOBKO.API.Controllers
             return response.Success ? Ok(response) : BadRequest(response);
         }
 
-        // DELETE: api/Games/5
-        [HttpDelete("{id}")]
+        // DELETE: api/Games/game-5
+        [HttpDelete("game-{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
             try
@@ -102,9 +102,8 @@ namespace WEB_153503_BOBKO.API.Controllers
         {
             var response = await _gameService.SaveImageAsync(id, formFile);
             if (response.Success)
-            {
                 return Ok(response);
-            }
+
             return NotFound(response);
         }
 

@@ -23,16 +23,16 @@ namespace WEB_153503_BOBKO.Areas.Admin.Pages
         public Game Game { get; set; } = default!;
 
         [BindProperty]
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
                 return Page();
 
-            var response = await _gameService.CreateGameAsync(Game, Image);
+            var responce = await _gameService.CreateGameAsync(Game, Image);
 
-            if (!response.Success)
+            if (!responce.Success)
                 return Page();
 
             return RedirectToPage("./Index");

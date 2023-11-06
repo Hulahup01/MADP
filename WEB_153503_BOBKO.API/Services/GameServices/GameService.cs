@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using WEB_153503_BOBKO.API.Controllers;
 using WEB_153503_BOBKO.API.Data;
 using WEB_153503_BOBKO.Domain.Entities;
 using WEB_153503_BOBKO.Domain.Models;
@@ -9,12 +10,30 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
     public class GameService : IGameService
     {
         private readonly int _maxPageSize = 20;
+        private readonly string _imagesPath;
+        private readonly string _appUri;
+
         private readonly AppDbContext _dbContext;
+        private readonly ILogger<GamesController> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-
-        public GameService(AppDbContext dbContext)
+        public GameService(
+            AppDbContext dbContext,
+            IWebHostEnvironment env,
+            IConfiguration configuration,
+            ILogger<GamesController> logger,
+            IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
+            _logger = logger;
+            _webHostEnvironment = env;
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+
+            _imagesPath = Path.Combine(env.WebRootPath, "Images");
+            _appUri = configuration.GetSection("appUri").Value!;
         }
 
 
@@ -58,7 +77,7 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
 
         public async Task<ResponseData<Game>> GetGameByIdAsync(int id)
         {
-            var game = await _dbContext.Games.FindAsync(id);
+            var game = await _dbContext.Games.FindAsync(id); await _dbContext.Games.Include(g => g.Genre).SingleOrDefaultAsync(g => g.Id == id);
 
             if (game is null)
             {
@@ -95,7 +114,7 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
                     Data = dataList,
                     Success = true,
                 };
-            }         
+            }
 
             int totalPages =
                     count % pageSize == 0 ?
@@ -125,7 +144,45 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
 
         public async Task<ResponseData<string>> SaveImageAsync(int id, IFormFile formFile)
         {
-            throw new NotImplementedException();
+            var responseData = new ResponseData<string>();
+            var game = await _dbContext.Games.FindAsync(id);
+            if (game == null)
+            {
+                responseData.Success = false;
+                responseData.ErrorMessage = "No item found";
+                return responseData;
+            }
+
+            var host = "https://" + _httpContextAccessor.HttpContext.Request.Host;
+
+            var imageFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+
+            if (formFile != null)
+            {
+                if (!string.IsNullOrEmpty(game.Path))
+                {
+                    var prevImage = Path.GetFileName(game.Path);
+                    var prevImagePath = Path.Combine(imageFolder, prevImage);
+                    if (File.Exists(prevImagePath))
+                    {
+                        File.Delete(prevImagePath);
+                    }
+                }
+
+                var ext = Path.GetExtension(formFile.FileName);
+                var fName = Path.ChangeExtension(Path.GetRandomFileName(), ext);
+                var filePath = Path.Combine(imageFolder, fName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+
+                game.Path = $"{host}/images/{fName}";
+                await _dbContext.SaveChangesAsync();
+            }
+            responseData.Data = game.Path;
+            return responseData;
         }
 
 
@@ -140,7 +197,9 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
             updatingGame.Description = game.Description;
             updatingGame.Price = game.Price;
             updatingGame.Path = game.Path;
-            updatingGame.Genre = game.Genre;
+            updatingGame.GenreId = game.GenreId;
+
+            await _dbContext.SaveChangesAsync();
         }
 
     }

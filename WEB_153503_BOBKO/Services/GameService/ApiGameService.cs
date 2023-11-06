@@ -2,6 +2,8 @@
 using System.Text;
 using WEB_153503_BOBKO.Domain.Models;
 using WEB_153503_BOBKO.Domain.Entities;
+using Azure.Core;
+using System.Net.Http;
 
 namespace WEB_153503_BOBKO.Services.GameService
 {
@@ -95,7 +97,7 @@ namespace WEB_153503_BOBKO.Services.GameService
 
         public async Task DeleteGameAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress!.AbsoluteUri}Games/{id}");
+            var response = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress!.AbsoluteUri}Games/game-{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -136,7 +138,7 @@ namespace WEB_153503_BOBKO.Services.GameService
 
         public async Task UpdateGameAsync(int id, Game game, IFormFile? formFile)
         {
-            var uri = new Uri(_httpClient.BaseAddress!.AbsoluteUri + "Games/" + id);
+            var uri = new Uri(_httpClient.BaseAddress!.AbsoluteUri + "Games/game-" + id);
             var response = await _httpClient.PutAsJsonAsync(uri, game, _serializerOptions);
 
             if (!response.IsSuccessStatusCode)
@@ -145,14 +147,27 @@ namespace WEB_153503_BOBKO.Services.GameService
             }
             else if (formFile != null)
             {
-                int toolId = (await response.Content.ReadFromJsonAsync<ResponseData<Game>>(_serializerOptions))!.Data!.Id;
-                await SaveImageAsync(toolId, formFile);
+                int gameId = (await response.Content.ReadFromJsonAsync<ResponseData<Game>>(_serializerOptions))!.Data!.Id;
+                await SaveImageAsync(gameId, formFile);
             }
         }
 
         private async Task SaveImageAsync(int id, IFormFile image)
         {
-            throw new NotImplementedException();
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{_httpClient.BaseAddress.AbsoluteUri}Games/{id}")
+            };
+            var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(image.OpenReadStream());
+            content.Add(streamContent, "formFile", image.FileName);
+            request.Content = content;
+
+            await _httpClient.SendAsync(request);
+
         }
+
     }
 }
