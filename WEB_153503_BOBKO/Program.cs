@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication;
+using NuGet.Packaging;
 using WEB_153503_BOBKO.Models;
 using WEB_153503_BOBKO.Services.GameGenreService;
 using WEB_153503_BOBKO.Services.GameService;
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
 
 //builder.Services.AddScoped<IGameGenreService, MemoryGameGenreService>();
 //builder.Services.AddScoped<IGameService, MemoryGameService>();
@@ -16,6 +19,23 @@ UriData uriData = builder.Configuration.GetSection("UriData").Get<UriData>()!;
 builder.Services.AddHttpClient<IGameService, ApiGameService>(opt => opt.BaseAddress = new Uri(uriData.ApiUri));
 builder.Services.AddHttpClient<IGameGenreService, ApiGameGenreService>(opt => opt.BaseAddress = new Uri(uriData.ApiUri));
 
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultScheme = "cookie";
+    opt.DefaultChallengeScheme = "oidc";
+})
+    .AddCookie("cookie")
+    .AddOpenIdConnect("oidc", options =>
+    {
+        options.Authority = builder.Configuration["InteractiveServiceSettings:AuthorityUrl"];
+        options.ClientId = builder.Configuration["InteractiveServiceSettings:ClientId"];
+        options.ClientSecret = builder.Configuration["InteractiveServiceSettings:ClientSecret"];
+        // Получить Claims пользователя
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.ResponseType = "code";
+        options.ResponseMode = "query";
+        options.SaveTokens = true;
+    });
 
 var app = builder.Build();
 
@@ -31,11 +51,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
+
+app.MapRazorPages().RequireAuthorization();
 
 app.Run();

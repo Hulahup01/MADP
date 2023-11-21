@@ -4,6 +4,9 @@ using WEB_153503_BOBKO.Domain.Models;
 using WEB_153503_BOBKO.Domain.Entities;
 using Azure.Core;
 using System.Net.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
 
 namespace WEB_153503_BOBKO.Services.GameService
 {
@@ -13,8 +16,9 @@ namespace WEB_153503_BOBKO.Services.GameService
         private string _pageSize;
         private readonly JsonSerializerOptions _serializerOptions;
         private readonly ILogger<ApiGameService> _logger;
+        private readonly HttpContext _httpContext;
 
-        public ApiGameService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiGameService> logger)
+        public ApiGameService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiGameService> logger, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
             _pageSize = configuration.GetSection("ItemsPerPage").Value!;
@@ -24,6 +28,9 @@ namespace WEB_153503_BOBKO.Services.GameService
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             _logger = logger;
+            _httpContext = httpContextAccessor.HttpContext!;
+            var token = _httpContext.GetTokenAsync("access_token").Result;
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }
 
         public async Task<ResponseData<ListModel<Game>>> GetGameListAsync(string? genreNormalizedName, int pageNo = 1)

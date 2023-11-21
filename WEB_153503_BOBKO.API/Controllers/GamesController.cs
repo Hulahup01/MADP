@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +22,12 @@ namespace WEB_153503_BOBKO.API.Controllers
     {
         private readonly IGameService _gameService;
 
-        public GamesController(IGameService gameService)
+        public GamesController(IGameService gameService, IHttpContextAccessor httpContextAccessor)
         {
             _gameService = gameService;
+
+            var _httpContext = httpContextAccessor.HttpContext!;
+            var token = _httpContext.GetTokenAsync("access_token").Result;
         }
 
         // GET: api/Games
@@ -44,6 +50,7 @@ namespace WEB_153503_BOBKO.API.Controllers
 
         // PUT: api/Games/game-5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("game-{id}")]
         public async Task<IActionResult> PutGame(int id, Game game)
         {
@@ -69,6 +76,7 @@ namespace WEB_153503_BOBKO.API.Controllers
 
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(Game game)
         {
@@ -77,6 +85,7 @@ namespace WEB_153503_BOBKO.API.Controllers
         }
 
         // DELETE: api/Games/game-5
+        [Authorize]
         [HttpDelete("game-{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
@@ -97,6 +106,7 @@ namespace WEB_153503_BOBKO.API.Controllers
         }
 
         // POST: api/Tools/5
+        [Authorize]
         [HttpPost("{id}")]
         public async Task<ActionResult<ResponseData<string>>> PostImage(int id, IFormFile formFile)
         {

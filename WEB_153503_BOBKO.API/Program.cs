@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 using WEB_153503_BOBKO.API.Data;
@@ -20,6 +21,14 @@ builder.Services.AddScoped<IGameService, GameService>();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        opt.Authority = builder.Configuration.GetSection("isUri").Value;
+        opt.TokenValidationParameters.ValidateAudience = false;
+        opt.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+    });
 
 var app = builder.Build();
 
@@ -35,6 +44,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
