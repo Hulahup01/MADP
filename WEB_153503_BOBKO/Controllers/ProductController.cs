@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WEB_153503_BOBKO.Domain.Entities;
 using WEB_153503_BOBKO.Domain.Models;
+using WEB_153503_BOBKO.Extensions;
 using WEB_153503_BOBKO.Services.GameGenreService;
 using WEB_153503_BOBKO.Services.GameService;
 
@@ -39,12 +40,26 @@ namespace WEB_153503_BOBKO.Controllers
             if (!gameResponse.Success)
                 return NotFound(gameResponse.ErrorMessage);
 
-            return View(new ListModel<Game>
+            if (Request.IsAjaxRequest())
             {
-                Items = gameResponse.Data.Items,
-                CurrentPage = pageNo,
-                TotalPages = gameResponse.Data.TotalPages,
-            });
+                ListModel<Game> data = gameResponse.Data!;
+                return PartialView("_ProductIndexPartial", new
+                {
+                    Items = data.Items,
+                    CurrentPage = pageNo,
+                    TotalPages =  data.TotalPages,
+                    GameGenreNormalized = gameGenreNormalized
+                });
+            }
+            else
+            {
+                return View(new ListModel<Game>
+                {
+                    Items = gameResponse.Data.Items,
+                    CurrentPage = pageNo,
+                    TotalPages = gameResponse.Data.TotalPages,
+                });
+            }
             
         }
     }
