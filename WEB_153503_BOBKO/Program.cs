@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
 using NuGet.Packaging;
+using Serilog;
 using WEB_153503_BOBKO.Domain.Models;
+using WEB_153503_BOBKO.Middleware;
 using WEB_153503_BOBKO.Models;
 using WEB_153503_BOBKO.Services.CartService;
 using WEB_153503_BOBKO.Services.GameGenreService;
@@ -44,6 +46,10 @@ builder.Services.AddAuthentication(opt =>
         options.SaveTokens = true;
     });
 
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -71,5 +77,7 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.MapRazorPages().RequireAuthorization();
+
+app.UseMiddleware<LoggingMiddleware>(logger);
 
 app.Run();
