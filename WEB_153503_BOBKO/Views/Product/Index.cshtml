@@ -10,15 +10,8 @@
     var currentGenre = ViewData["currentGenre"] as GameGenre;
     var genres = ViewData["genres"] as IEnumerable<GameGenre>;
 
-    string? category = request.RouteValues["gameGenreNormalized"]?.ToString();
-    int prev =
-        Model.CurrentPage == 1 ?
-        1 :
-        Model.CurrentPage - 1;
-    int next =
-        Model.CurrentPage == Model.TotalPages ?
-        Model.TotalPages :
-        Model.CurrentPage + 1;
+    int prev = Model.CurrentPage == 1 ? 1 : Model.CurrentPage - 1;
+    int next = Model.CurrentPage == Model.TotalPages ? Model.TotalPages : Model.CurrentPage + 1;
 }
 
 <h1>Games</h1>

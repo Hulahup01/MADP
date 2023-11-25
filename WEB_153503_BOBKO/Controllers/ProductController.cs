@@ -34,7 +34,8 @@ namespace WEB_153503_BOBKO.Controllers
             ViewData["currentGenre"] =
                 gameGenreNormalized == null ?
                 new GameGenre { Name = "Все", NormalizedName = null } :
-                genres.Where(genre => genre.NormalizedName.Equals(gameGenreNormalized)).ToList().First();
+                genres?.SingleOrDefault(g=> g.NormalizedName == gameGenreNormalized);
+
 
             if (gameGenreNormalized == "Все")
                 gameGenreNormalized = null;
@@ -56,12 +57,13 @@ namespace WEB_153503_BOBKO.Controllers
             }
             else
             {
-                return View(new ListModel<Game>
-                {
-                    Items = gameResponse.Data.Items,
-                    CurrentPage = pageNo,
-                    TotalPages = gameResponse.Data.TotalPages,
-                });
+                //return View(new ListModel<Game>
+                //{
+                //    Items = gameResponse.Data.Items,
+                //    CurrentPage = pageNo,
+                //    TotalPages = gameResponse.Data.TotalPages,
+                //});
+                return View(gameResponse.Data);
             }
             
         }
