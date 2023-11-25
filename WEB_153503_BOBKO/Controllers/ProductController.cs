@@ -8,6 +8,7 @@ using WEB_153503_BOBKO.Services.GameService;
 
 namespace WEB_153503_BOBKO.Controllers
 {
+
     public class ProductController : Controller
     {
         private IGameGenreService _gameGenreService;
@@ -19,6 +20,8 @@ namespace WEB_153503_BOBKO.Controllers
             _gameService = gameService;
         }
 
+        [Route("Catalog")]
+        [Route("Catalog/{gameGenreNormalized?}")]
         public async Task<IActionResult> Index(string? gameGenreNormalized, int pageNo = 1)
         {
             var genresResponse = await _gameGenreService.GetGameGenreListAsync();

@@ -64,6 +64,7 @@ namespace WEB_153503_BOBKO.TagHelpers
             var aPrevious = new TagBuilder("a");
             aPrevious.AddCssClass("page-link");
             aPrevious.Attributes.Add("href", GetUrl(prevNo));
+            aPrevious.Attributes.Add("onclick", "onPartial()"); // func
             aPrevious.InnerHtml.Append("Назад");
 
             liPrevious.InnerHtml.AppendHtml(aPrevious);
@@ -80,6 +81,9 @@ namespace WEB_153503_BOBKO.TagHelpers
                 var a = new TagBuilder("a");
                 a.AddCssClass("page-link");
                 a.Attributes.Add("href", GetUrl(i));
+
+                a.Attributes.Add("onclick", "onPartial()");  // func
+
                 a.InnerHtml.Append($"{i}");
 
                 li.InnerHtml.AppendHtml(a);
@@ -95,6 +99,7 @@ namespace WEB_153503_BOBKO.TagHelpers
             var aNext = new TagBuilder("a");
             aNext.AddCssClass("page-link");
             aNext.Attributes.Add("href", GetUrl(nextNo));
+            aNext.Attributes.Add("onclick", "onPartial()"); // func
             aNext.InnerHtml.Append("Вперед");
 
             liNext.InnerHtml.AppendHtml(aNext);

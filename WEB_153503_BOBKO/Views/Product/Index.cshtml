@@ -54,17 +54,27 @@
 </div>
 
 <script>
-        console.log("ты тут ?")
-        $('a.page-link').click((e) => {
-            e.preventDefault();
-        console.log("сюда")
-            //let url = $($(this)[0]).attr('href');
-        const url = e.target.href;
-            //console.log({ hlips: $(this) , tis: $(this), e, target: e.target, url});
-            console.log(url);
-            $.get(url, (data) => {
-                $('#partial').html(data);
-            });
+
+    console.log("ты тут ?")
+
+    function onPartial() {
+        event.preventDefault();
+        console.log("сюда");
+        const url = event.target.href;
+        console.log(url);
+        $.get(url, function (data) {
+            $('#partial').html(data);
         });
+    }
+
+    //$('a.page-link').click((e) => {
+    //    e.preventDefault();
+    //    console.log("сюда")
+    //    const url = e.target.href;
+    //    console.log(url);
+    //    $.get(url, (data) => {
+    //        $('#partial').html(data);
+    //    });
+    //});
 </script>
 
