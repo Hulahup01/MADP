@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WEB_153503_BOBKO.Domain.Entities;
 
 namespace WEB_153503_BOBKO.Domain.Models
 {
-    internal class CartItem
+    public class CartItem
     {
+        public Game Game { get; set; } = null!;
+        public int Count { get; set; }
     }
 }

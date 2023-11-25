@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
 using NuGet.Packaging;
+using WEB_153503_BOBKO.Domain.Models;
 using WEB_153503_BOBKO.Models;
+using WEB_153503_BOBKO.Services.CartService;
 using WEB_153503_BOBKO.Services.GameGenreService;
 using WEB_153503_BOBKO.Services.GameService;
 
@@ -11,10 +13,15 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 //builder.Services.AddScoped<IGameGenreService, MemoryGameGenreService>();
 //builder.Services.AddScoped<IGameService, MemoryGameService>();
 
 UriData uriData = builder.Configuration.GetSection("UriData").Get<UriData>()!;
+
+builder.Services.AddScoped<Cart, SessionCart>();
 
 builder.Services.AddHttpClient<IGameService, ApiGameService>(opt => opt.BaseAddress = new Uri(uriData.ApiUri));
 builder.Services.AddHttpClient<IGameGenreService, ApiGameGenreService>(opt => opt.BaseAddress = new Uri(uriData.ApiUri));
@@ -50,6 +57,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthentication();
 
