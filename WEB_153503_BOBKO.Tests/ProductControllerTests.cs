@@ -205,10 +205,8 @@ namespace WEB_153503_BOBKO.Tests
                 }
             };
 
-            // Act.
             var result = controller.Index(null).Result;
 
-            // Assert.
             var viewResult = Assert.IsType<ViewResult>(result);
             var modelResult = Assert.IsType<ListModel<Game>>(viewResult.Model);
             Assert.Equal(model, modelResult);

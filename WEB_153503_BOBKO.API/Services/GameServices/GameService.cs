@@ -9,9 +9,7 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
 {
     public class GameService : IGameService
     {
-        private readonly int _maxPageSize = 20;
-        private readonly string _imagesPath;
-        private readonly string _appUri;
+        public int MaxPageSize = 20;
 
         private readonly AppDbContext _dbContext;
         private readonly ILogger<GamesController> _logger;
@@ -30,10 +28,7 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
             _logger = logger;
             _webHostEnvironment = env;
             _configuration = configuration;
-            _httpContextAccessor = httpContextAccessor;
-
-            _imagesPath = Path.Combine(env.WebRootPath, "Images");
-            _appUri = configuration.GetSection("appUri").Value!;
+            _httpContextAccessor = httpContextAccessor;            
         }
 
 
@@ -98,8 +93,8 @@ namespace WEB_153503_BOBKO.API.Services.GameServices
 
         public async Task<ResponseData<ListModel<Game>>> GetGameListAsync(string? genreNormalizedName, int pageNo = 1, int pageSize = 3)
         {
-            if (pageSize > _maxPageSize)
-                pageSize = _maxPageSize;
+            if (pageSize > MaxPageSize)
+                pageSize = MaxPageSize;
 
             var query = _dbContext.Games.AsQueryable();
             var dataList = new ListModel<Game>();
