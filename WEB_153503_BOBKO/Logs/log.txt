@@ -1,1 +1,11 @@
 2023-11-26 02:50:59.382 +03:00 [INF] ---> request /menu returns 404
+2023-11-27 18:26:09.173 +03:00 [INF] ---> request /Identity/Logout returns 302
+2023-11-27 18:26:09.173 +03:00 [INF] ---> request /Identity/Logout returns 302
+2023-11-27 18:26:15.898 +03:00 [INF] ---> request /Identity/Login returns 302
+2023-11-27 18:26:16.109 +03:00 [INF] ---> request /Identity/Login returns 302
+2023-11-27 18:34:07.326 +03:00 [INF] ---> request /Identity/Logout returns 302
+2023-11-27 20:46:17.904 +03:00 [INF] ---> request /Identity/Login returns 302
+2023-11-27 20:46:32.611 +03:00 [INF] ---> request /Cart/add/7?returnurl=%2FCatalog%3FpageNo%3D3 returns 302
+2023-11-27 20:46:34.453 +03:00 [INF] ---> request /Cart/add/8?returnurl=%2FCatalog%3FpageNo%3D3 returns 302
+2023-11-27 20:46:38.495 +03:00 [INF] ---> request /Cart/remove/7?returnUrl=%2FCart returns 302
+2023-11-27 20:46:39.596 +03:00 [INF] ---> request /Cart/remove/8?returnUrl=%2FCart returns 302

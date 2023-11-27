@@ -54,6 +54,15 @@ namespace WEB_153503_BOBKO.IdentityServer
                     options.ClientId = "copy client ID from Google here";
                     options.ClientSecret = "copy client secret from Google here";
                 });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("BlazorWasmPolicy", builder =>
+                {
+                    builder.WithOrigins("https://localhost:7288")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             return builder.Build();
         }
@@ -69,6 +78,7 @@ namespace WEB_153503_BOBKO.IdentityServer
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors("BlazorWasmPolicy");
             app.UseIdentityServer();
             app.UseAuthorization();
 
