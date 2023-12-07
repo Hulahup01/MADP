@@ -1,13 +1,16 @@
 ﻿@page "/fetchdata"
+@using Domain.Models
+@using Domain.Entities
+@using System.Text.Json
 @inject HttpClient Http
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Games</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Games</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (games == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -16,42 +19,36 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var game in games)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@game.Name</td>
+                    <td>@game.Description</td>
+                    <td>@game.Price</td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
+
 @code {
-    private WeatherForecast[]? forecasts;
+    private List<Game>? games;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
-
-    public class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
+        var response = await Http.GetAsync($"{Http.BaseAddress}Games/");
+        var jsonSerializerOptions = new JsonSerializerOptions()
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+			};
+        var rs = await response.Content.ReadFromJsonAsync<ResponseData<ListModel<Game>>>(jsonSerializerOptions);
+        games = rs!.Data!.Items;
+	}
 }
