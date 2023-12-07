@@ -4,6 +4,8 @@ namespace WEB_153503_BOBKO.BlazorWasm.Services
 {
     public interface IDataService
     {
+        event Action DataChanged;
+
         // Список категорий объектов
         List<GameGenre> Genres { get; set; }
 

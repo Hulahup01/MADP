@@ -33,6 +33,7 @@ namespace WEB_153503_BOBKO.API.Controllers
         // GET: api/Games
         [HttpGet("{pageNo:int}")]
         [HttpGet("{gameGenre?}/{pageNo:int?}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(string? gameGenre, int pageNo = 1, int pageSize = 3)
         {
             var response = await _gameService.GetGameListAsync(gameGenre, pageNo, pageSize);
@@ -42,6 +43,7 @@ namespace WEB_153503_BOBKO.API.Controllers
 
         // GET: api/Games/game-5
         [HttpGet("game-{id}")]
+        [Authorize]
         public async Task<ActionResult<Game>> GetGame(int id)
         {
             var response = await _gameService.GetGameByIdAsync(id);
