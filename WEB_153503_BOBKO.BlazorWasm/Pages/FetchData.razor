@@ -3,6 +3,7 @@
 @using Domain.Entities
 @using System.Text.Json
 @inject HttpClient Http
+@inject IDataService dataService
 
 <PageTitle>Games</PageTitle>
 
@@ -43,12 +44,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.GetAsync($"{Http.BaseAddress}Games/");
-        var jsonSerializerOptions = new JsonSerializerOptions()
-			{
-				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-			};
-        var rs = await response.Content.ReadFromJsonAsync<ResponseData<ListModel<Game>>>(jsonSerializerOptions);
-        games = rs!.Data!.Items;
+        await dataService.GetGameListAsync(null);
+        if(dataService.Success)
+        {
+            games = dataService.GameList;
+        }
 	}
 }
